@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "VCALL",
+    "slug": "vcall",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "vcall",
+    "android": {
+      "package": "com.arsolutions.vcall",
+      "adaptiveIcon": {
+        "backgroundColor": "#111A3A"
+      },
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
