@@ -28,7 +28,8 @@
             "kotlinVersion": "2.2.0"
           }
         }
-      ]
+      ],
+      "./plugins/withFirebaseBomOverride"
     ],
     "experiments": {
       "typedRoutes": false
