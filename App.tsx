@@ -134,10 +134,13 @@ export default function App() {
                 style={styles.input}
               />
             )}
-            {screen === "profile" && (\n              <TextInput value={fullName} onChangeText={setFullName} placeholder="आपका पूरा नाम" placeholderTextColor="#8793AA" autoCapitalize="words" style={styles.input} />\n            )}\n            {screen === "otp" && (
+            {screen === "profile" && (
+              <TextInput value={fullName} onChangeText={setFullName} placeholder="आपका पूरा नाम" placeholderTextColor="#8793AA" autoCapitalize="words" style={styles.input} />
+            )}
+            {screen === "otp" && (
               <TextInput
                 value={otp}
-                onChangeText={(value) => setOtp(value.replace(/\\D/g, "").slice(0, 6))}
+                onChangeText={(value) => setOtp(value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="6-digit OTP"
                 placeholderTextColor="#8793AA"
                 keyboardType="number-pad"
