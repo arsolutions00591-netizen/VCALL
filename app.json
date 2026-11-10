@@ -7,7 +7,7 @@
     "userInterfaceStyle": "automatic",
     "scheme": "vcall",
     "android": {
-      "package": "com.arsolutions.vcall",
+      "package": "com.vcall.app",
       "adaptiveIcon": {
         "backgroundColor": "#111A3A"
       },
