@@ -105,7 +105,7 @@ export default function App() {
   if (screen !== "app") {
     return (
       <SafeAreaView style={styles.authSafe}>
-        <StatusBar barStyle="light-content" backgroundColor="#102A56" />
+        <StatusBar barStyle="light-content" />
         <ScrollView contentContainerStyle={styles.authContainer} keyboardShouldPersistTaps="handled">
           <View style={styles.brand}>
             <View style={styles.logo}><Text style={styles.logoText}>V</Text></View>
@@ -179,7 +179,7 @@ export default function App() {
   const title = tab === "Home" ? "Stay connected" : tab;
   return (
     <SafeAreaView style={styles.appSafe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F8FC" />
+      <StatusBar barStyle="dark-content" />
       <View style={styles.topBar}>
         <View><Text style={styles.smallBrand}>VCALL</Text><Text style={styles.pageTitle}>{title}</Text></View>
         <View style={styles.topAvatar}><Text style={styles.topAvatarText}>V</Text></View>
