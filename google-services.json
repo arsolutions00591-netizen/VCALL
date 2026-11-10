@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1055332757275",
+    "project_id": "vcall-f9221",
+    "storage_bucket": "vcall-f9221.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055332757275:android:5b45dd005cbc85cfa42dbe",
+        "android_client_info": {
+          "package_name": "com.vcall.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGXjKu-LSGri_mnQqEHsZkEaDMXHKt3Bo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
