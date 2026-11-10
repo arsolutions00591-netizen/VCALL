@@ -5,9 +5,10 @@ import {
 } from "react-native";
 import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { confirmPhoneOtp, requestPhoneOtp, signOutVCallUser } from "./src/services/phoneAuth";
+import { saveUserProfile } from "./src/services/userProfile";
 
 type Tab = "Home" | "Contacts" | "Calls" | "Profile";
-type Screen = "welcome" | "phone" | "otp" | "app";
+type Screen = "welcome" | "phone" | "otp" | "profile" | "app";
 
 const demoContacts = [
   { name: "Aarav Sharma", phone: "+91 98765 43210", initials: "AS" },
@@ -22,6 +23,8 @@ export default function App() {
   const [otp, setOtp] = useState("");
   const [confirmation, setConfirmation] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
   const [verifiedPhone, setVerifiedPhone] = useState("");
+  const [verifiedUid, setVerifiedUid] = useState("");
+  const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -50,9 +53,23 @@ export default function App() {
     try {
       const user = await confirmPhoneOtp(confirmation, otp);
       setVerifiedPhone(user.phoneNumber ?? phone.trim());
-      setScreen("app");
+      setVerifiedUid(user.uid);
+      setScreen("profile");
     } catch (e) {
       setError(e instanceof Error ? e.message : "OTP verify नहीं हुआ।");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const finishProfile = async () => {
+    setError("");
+    setBusy(true);
+    try {
+      await saveUserProfile({ uid: verifiedUid, name: fullName, phone: verifiedPhone });
+      setScreen("app");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Profile save नहीं हुआ।");
     } finally {
       setBusy(false);
     }
@@ -97,14 +114,14 @@ export default function App() {
           </View>
           <View style={styles.panel}>
             <Text style={styles.heading}>
-              {screen === "welcome" ? "Welcome to VCALL" : screen === "phone" ? "Mobile number से लॉगिन" : "OTP verify करें"}
+              {screen === "welcome" ? "Welcome to VCALL" : screen === "phone" ? "Mobile number से लॉगिन" : screen === "otp" ? "OTP verify करें" : "अपना प्रोफाइल बनाएँ"}
             </Text>
             <Text style={styles.subheading}>
               {screen === "welcome"
                 ? "अपने लोगों से जुड़े रहने का आसान तरीका।"
                 : screen === "phone"
                   ? "Country code के साथ अपना मोबाइल नंबर डालें।"
-                  : `हमने ${phone.trim()} पर 6 अंकों का OTP भेजा है।`}
+                  : screen === "otp" ? `हमने ${phone.trim()} पर 6 अंकों का OTP भेजा है।` : "अपना नाम लिखें। यह नाम आपकी VCALL प्रोफाइल में दिखेगा।"}
             </Text>
             {screen === "phone" && (
               <TextInput
@@ -117,7 +134,7 @@ export default function App() {
                 style={styles.input}
               />
             )}
-            {screen === "otp" && (
+            {screen === "profile" && (\n              <TextInput value={fullName} onChangeText={setFullName} placeholder="आपका पूरा नाम" placeholderTextColor="#8793AA" autoCapitalize="words" style={styles.input} />\n            )}\n            {screen === "otp" && (
               <TextInput
                 value={otp}
                 onChangeText={(value) => setOtp(value.replace(/\\D/g, "").slice(0, 6))}
@@ -133,10 +150,10 @@ export default function App() {
             <TouchableOpacity
               disabled={busy}
               style={[styles.primaryButton, busy && styles.disabledButton]}
-              onPress={screen === "welcome" ? () => setScreen("phone") : screen === "phone" ? sendOtp : verifyOtp}
+              onPress={screen === "welcome" ? () => setScreen("phone") : screen === "phone" ? sendOtp : screen === "otp" ? verifyOtp : finishProfile}
             >
               <Text style={styles.primaryText}>
-                {busy ? "कृपया प्रतीक्षा करें…" : screen === "welcome" ? "मोबाइल से जारी रखें" : screen === "phone" ? "OTP भेजें" : "OTP verify करें"}
+                {busy ? "कृपया प्रतीक्षा करें…" : screen === "welcome" ? "मोबाइल से जारी रखें" : screen === "phone" ? "OTP भेजें" : screen === "otp" ? "OTP verify करें" : "प्रोफाइल सेव करें"}
               </Text>
             </TouchableOpacity>
             {screen === "otp" && (
@@ -144,7 +161,7 @@ export default function App() {
                 <Text style={styles.secondaryText}>OTP दोबारा भेजें</Text>
               </TouchableOpacity>
             )}
-            {screen !== "welcome" && (
+            {screen !== "welcome" && screen !== "profile" && (
               <TouchableOpacity disabled={busy} onPress={() => { setError(""); setScreen(screen === "otp" ? "phone" : "welcome"); }}>
                 <Text style={styles.backLink}>वापस जाएँ</Text>
               </TouchableOpacity>
