@@ -27,6 +27,10 @@ export default function App() {
   const [fullName, setFullName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [contactSearch, setContactSearch] = useState("");
+  const filteredContacts = demoContacts.filter((person) =>
+    `${person.name} ${person.phone}`.toLowerCase().includes(contactSearch.trim().toLowerCase())
+  );
 
   const sendOtp = async () => {
     setError("");
@@ -200,8 +204,18 @@ export default function App() {
         </>}
         {tab === "Contacts" && <>
           <Text style={styles.sectionTitle}>Your contacts</Text>
+          <TextInput
+            value={contactSearch}
+            onChangeText={setContactSearch}
+            placeholder="नाम या मोबाइल नंबर खोजें"
+            placeholderTextColor="#8793AA"
+            autoCapitalize="none"
+            style={styles.searchInput}
+          />
           <Text style={styles.muted}>अभी ये sample contacts हैं। असली phone contacts अगली development phase में जोड़े जाएँगे।</Text>
-          {demoContacts.map(renderContact)}
+          {filteredContacts.length > 0
+            ? filteredContacts.map(renderContact)
+            : <View style={styles.emptyCard}><Text style={styles.muted}>कोई contact नहीं मिला। दूसरा नाम या नंबर खोजें।</Text></View>}
         </>}
         {tab === "Calls" && <View style={styles.emptyCard}><Text style={styles.sectionTitle}>Call history</Text><Text style={styles.muted}>Missed, received और outgoing calls यहाँ दिखेंगे। Calling service अभी जुड़नी बाकी है।</Text></View>}
         {tab === "Profile" && <View style={styles.emptyCard}><Text style={styles.sectionTitle}>Your VCALL profile</Text><Text style={styles.muted}>Verified number: {verifiedPhone}</Text><TouchableOpacity disabled={busy} style={styles.logoutButton} onPress={logout}><Text style={styles.logoutText}>{busy ? "Please wait…" : "Log out"}</Text></TouchableOpacity></View>}
@@ -228,6 +242,7 @@ const styles = StyleSheet.create({
   panel: { backgroundColor: "#FFFFFF", borderRadius: 24, padding: 22 },
   heading: { color: "#152B4E", fontSize: 23, fontWeight: "800", marginBottom: 8 },
   subheading: { color: "#687991", fontSize: 14, lineHeight: 21, marginBottom: 20 },
+  searchInput: { backgroundColor: "#FFFFFF", borderColor: "#DFE7F1", borderWidth: 1, borderRadius: 12, color: "#152B4E", paddingHorizontal: 14, paddingVertical: 13, marginTop: 12, marginBottom: 12 },
   input: { backgroundColor: "#F4F7FB", borderColor: "#DFE7F1", borderWidth: 1, borderRadius: 12, color: "#152B4E", paddingHorizontal: 14, paddingVertical: 14, marginBottom: 12 },
   otpInput: { textAlign: "center", letterSpacing: 8, fontSize: 22 },
   primaryButton: { backgroundColor: "#2878E5", borderRadius: 13, paddingVertical: 15, alignItems: "center", marginTop: 5 },
