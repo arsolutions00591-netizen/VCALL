@@ -1,7 +1,16 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Secure default: no client access until collection-specific rules are reviewed.
+    match /users/{userId} {
+      // A signed-in user may access only their own profile.
+      // The stored phone must match the verified Firebase Auth phone claim.
+      allow read, create, update: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.data.phone == request.auth.token.phone_number;
+      allow delete: if false;
+    }
+
+    // All other collections remain private until specific rules are added.
     match /{document=**} {
       allow read, write: if false;
     }
