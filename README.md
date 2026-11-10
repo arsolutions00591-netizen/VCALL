@@ -13,7 +13,7 @@ This repository contains the initial Expo application scaffold and a first-pass 
 - React Native + TypeScript
 - VCALL branding and blue/purple theme
 - Welcome, sign-in, and create-account UI screens
-- Android application identifier: `com.arsolutions.vcall`
+- Android application identifier: `com.vcall.app`
 
 ### Foundation added in this phase
 - Firebase client configuration scaffold using Expo public environment variables
@@ -37,10 +37,10 @@ These features will be implemented and tested in later phases. The current sign-
 
 ## Firebase setup (required before backend features)
 
-1. Create a Firebase project in the Firebase Console.
-2. Register an Android app with package name `com.arsolutions.vcall`.
-3. Enable the required Firebase products only after reviewing billing and regional availability.
-4. Copy the keys from `.env.example` into a local `.env` file. Never commit real credentials or service-account keys.
+1. Create a Firebase project.
+2. Register an Android app with package name `com.vcall.app` (this matches the Android app registered in the supplied `google-services.json`).
+3. Download the matching `google-services.json` and place it in the project root for native Android builds. Do not commit it unless you have reviewed the repository visibility and Firebase key restrictions.
+4. Enable Phone Authentication in Firebase Authentication.
 5. Review `firestore.rules` before deploying. The starter rules intentionally deny all reads and writes until secure per-user rules are implemented.
 
 The Firebase client scaffold is not authentication. Phone OTP requires a supported verification flow and real-device testing before it can be enabled.
