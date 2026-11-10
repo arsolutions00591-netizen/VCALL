@@ -15,7 +15,8 @@
         "CAMERA",
         "RECORD_AUDIO",
         "POST_NOTIFICATIONS"
-      ]
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "plugins": [
       "@react-native-firebase/app",
