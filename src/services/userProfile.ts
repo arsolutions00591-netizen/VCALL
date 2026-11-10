@@ -1,5 +1,4 @@
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
-import { firestoreDb } from "../config/firebase";
+import firestore from "@react-native-firebase/firestore";
 
 export type VCallUserProfile = {
   uid: string;
@@ -7,11 +6,7 @@ export type VCallUserProfile = {
   phone: string;
 };
 
-/**
- * Creates or updates the signed-in user's profile.
- * The Firebase Auth UID is the document ID; timestamp is written
- * using the existing Firestore field name and server time.
- */
+/** Save the signed-in user's profile in users/{uid}. */
 export async function saveUserProfile({
   uid,
   name,
@@ -22,15 +17,16 @@ export async function saveUserProfile({
 
   if (!uid) throw new Error("A signed-in Firebase user is required.");
   if (!cleanName) throw new Error("Please enter your name.");
-  if (!cleanPhone) throw new Error("A verified phone number is required.");
+  if (!/^\\+[1-9]\\d{7,14}$/.test(cleanPhone)) {
+    throw new Error("A verified phone number is required.");
+  }
 
-  await setDoc(
-    doc(firestoreDb, "users", uid),
+  await firestore().collection("users").doc(uid).set(
     {
       name: cleanName,
       phone: cleanPhone,
       status: "active",
-      timestamp: serverTimestamp(),
+      timestamp: firestore.FieldValue.serverTimestamp(),
     },
     { merge: true }
   );
