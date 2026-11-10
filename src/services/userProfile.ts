@@ -1,4 +1,5 @@
-import firestore from "@react-native-firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { firestoreDb } from "../config/firebase";
 
 export type VCallUserProfile = {
   uid: string;
@@ -21,12 +22,13 @@ export async function saveUserProfile({
     throw new Error("A verified phone number is required.");
   }
 
-  await firestore().collection("users").doc(uid).set(
+  await setDoc(
+    doc(firestoreDb, "users", uid),
     {
       name: cleanName,
       phone: cleanPhone,
       status: "active",
-      timestamp: firestore.FieldValue.serverTimestamp(),
+      timestamp: serverTimestamp(),
     },
     { merge: true }
   );
