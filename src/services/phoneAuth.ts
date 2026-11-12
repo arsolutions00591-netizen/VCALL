@@ -2,6 +2,8 @@ import { getAuth, signInWithPhoneNumber, signOut } from "@react-native-firebase/
 
 const nativeAuth = getAuth();
 
+export type PhoneConfirmation = Awaited<ReturnType<typeof requestPhoneOtp>>;
+
 /**
  * Starts Firebase's native Android phone verification flow.
  * Use an international phone number, e.g. +919876543210.
