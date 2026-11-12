@@ -7,7 +7,7 @@ import { Firestore, getFirestore } from "firebase/firestore";
  * Never add a Firebase Admin SDK private key to the mobile app.
  */
 const firebaseConfig = {
-  apiKey: "AIzaSyDCawDGOSCs5g4Q5HyG1Dtf8U_dpJJvX-0",
+  apiKey: "AIzaSyDCawDGOSCs5g4Q5HyG1Dtf8U_dpJYvX-0",
   authDomain: "vcall-f9221.firebaseapp.com",
   projectId: "vcall-f9221",
   storageBucket: "vcall-f9221.firebasestorage.app",
