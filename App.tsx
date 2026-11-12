@@ -3,8 +3,8 @@ import {
   Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput,
   TouchableOpacity, View,
 } from "react-native";
-import type { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { confirmPhoneOtp, requestPhoneOtp, signOutVCallUser } from "./src/services/phoneAuth";
+import type { PhoneConfirmation } from "./src/services/phoneAuth";
 import { saveUserProfile } from "./src/services/userProfile";
 
 type Tab = "Home" | "Contacts" | "Calls" | "Profile";
@@ -21,7 +21,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>("Home");
   const [phone, setPhone] = useState("+91");
   const [otp, setOtp] = useState("");
-  const [confirmation, setConfirmation] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
+  const [confirmation, setConfirmation] = useState<PhoneConfirmation | null>(null);
   const [verifiedPhone, setVerifiedPhone] = useState("");
   const [verifiedUid, setVerifiedUid] = useState("");
   const [fullName, setFullName] = useState("");
