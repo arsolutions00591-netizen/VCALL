@@ -1,5 +1,10 @@
 import { FirebaseApp, getApp, getApps, initializeApp } from "firebase/app";
-import { Auth, getAuth } from "firebase/auth";
+import {
+  Auth,
+  getReactNativePersistence,
+  initializeAuth,
+} from "firebase/auth";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { Firestore, getFirestore } from "firebase/firestore";
 
 /**
@@ -8,7 +13,7 @@ import { Firestore, getFirestore } from "firebase/firestore";
  * Never add a Firebase Admin SDK private key to the mobile app.
  */
 const firebaseConfig = {
-  apiKey: "AIzaSyDCawDGOScs5g4Q5HyG1Dtf8U_dpJYvX-0",
+  apiKey: "AIzaSyDCawDGOSCs5g4Q5HyG1Dtf8U_dpJYvX-0",
   authDomain: "vcall-f9221.firebaseapp.com",
   projectId: "vcall-f9221",
   storageBucket: "vcall-f9221.firebasestorage.app",
@@ -21,6 +26,10 @@ export const firebaseApp: FirebaseApp = getApps().length > 0
   ? getApp()
   : initializeApp(firebaseConfig);
 
-export const firebaseAuth: Auth = getAuth(firebaseApp);
+// Persist Firebase JS Auth state across app restarts on React Native.
+export const firebaseAuth: Auth = initializeAuth(firebaseApp, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+});
+
 export const firestoreDb: Firestore = getFirestore(firebaseApp);
 export const isFirebaseConfigured = true;
