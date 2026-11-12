@@ -1,4 +1,8 @@
-import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import {
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "@react-native-firebase/firestore";
 import { firestoreDb } from "../config/firebase";
 
 export type VCallUserProfile = {
@@ -18,7 +22,7 @@ export async function saveUserProfile({
 
   if (!uid) throw new Error("A signed-in Firebase user is required.");
   if (!cleanName) throw new Error("Please enter your name.");
-  if (!/^\+[1-9]\d{7,14}$/.test(cleanPhone)) {
+  if (!/^\\+[1-9]\\d{7,14}$/.test(cleanPhone)) {
     throw new Error("A verified phone number is required.");
   }
 
