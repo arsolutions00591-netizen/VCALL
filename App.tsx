@@ -41,7 +41,11 @@ export default function App() {
       setOtp("");
       setScreen("otp");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "OTP भेजने में समस्या हुई।");
+      console.error("VCALL OTP SEND ERROR:", e);
+      if (e instanceof Error) {
+        console.error("VCALL OTP SEND STACK:", e.stack);
+      }
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
       setBusy(false);
     }
