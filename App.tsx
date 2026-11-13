@@ -227,6 +227,7 @@ export default function App() {
       <View style={styles.bottomNav}>
         {(["Home", "Contacts", "Calls", "Profile"] as Tab[]).map((item) => (
           <TouchableOpacity key={item} style={styles.navItem} onPress={() => setTab(item)}>
+            <Text style={styles.navIcon}>{item === "Home" ? "🏠" : item === "Contacts" ? "👥" : item === "Calls" ? "📞" : "👤"}</Text>
             <Text style={[styles.navLabel, tab === item && styles.navActive]}>{item}</Text>
           </TouchableOpacity>
         ))}
@@ -283,8 +284,9 @@ const styles = StyleSheet.create({
   emptyCard: { backgroundColor: "#FFFFFF", borderRadius: 18, padding: 22, borderWidth: 1, borderColor: "#E8EEF6" },
   logoutButton: { backgroundColor: "#2878E5", borderRadius: 12, padding: 14, alignItems: "center", marginTop: 22 },
   logoutText: { color: "#FFFFFF", fontWeight: "800" },
-  bottomNav: { flexDirection: "row", backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "#E7EDF5", paddingTop: 8, paddingBottom: 34, minHeight: 66 },
+  bottomNav: { flexDirection: "row", backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "#E7EDF5", paddingTop: 6, paddingBottom: 42, minHeight: 74 },
   navItem: { flex: 1, alignItems: "center" },
+  navIcon: { fontSize: 18, lineHeight: 22, marginBottom: 2 },
   navLabel: { color: "#91A0B4", fontSize: 12, fontWeight: "700" },
   navActive: { color: "#2878E5", fontWeight: "900" },
 });
