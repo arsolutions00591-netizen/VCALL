@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   emptyCard: { backgroundColor: "#FFFFFF", borderRadius: 18, padding: 22, borderWidth: 1, borderColor: "#E8EEF6" },
   logoutButton: { backgroundColor: "#2878E5", borderRadius: 12, padding: 14, alignItems: "center", marginTop: 22 },
   logoutText: { color: "#FFFFFF", fontWeight: "800" },
-  bottomNav: { flexDirection: "row", backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "#E7EDF5", paddingVertical: 15 },
+  bottomNav: { flexDirection: "row", backgroundColor: "#FFFFFF", borderTopWidth: 1, borderTopColor: "#E7EDF5", paddingTop: 12, paddingBottom: 30, minHeight: 66 },
   navItem: { flex: 1, alignItems: "center" },
   navLabel: { color: "#91A0B4", fontSize: 12, fontWeight: "700" },
   navActive: { color: "#2878E5", fontWeight: "900" },
