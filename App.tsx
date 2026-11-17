@@ -156,7 +156,7 @@ export default function App() {
       .join("");
 
     return (
-      <View key={person.id ?? `${person.name ?? "contact"}-${phone}`} style={styles.contactRow}>
+      <View key={`${person.name ?? "contact"}-${phone}`} style={styles.contactRow}>
         <View style={styles.avatar}><Text style={styles.avatarText}>{initials || "?"}</Text></View>
         <View style={styles.contactInfo}>
           <Text style={styles.contactName}>{person.name || "बिना नाम का Contact"}</Text>
