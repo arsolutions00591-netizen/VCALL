@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as Contacts from "expo-contacts";
 import {
   Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput,
   TouchableOpacity, View,
@@ -10,11 +11,6 @@ import { saveUserProfile } from "./src/services/userProfile";
 type Tab = "Home" | "Contacts" | "Calls" | "Profile";
 type Screen = "welcome" | "phone" | "otp" | "profile" | "app";
 
-const demoContacts = [
-  { name: "Aarav Sharma", phone: "+91 98765 43210", initials: "AS" },
-  { name: "Priya Verma", phone: "+91 98765 12340", initials: "PV" },
-  { name: "Rahul Kumar", phone: "+91 91234 56780", initials: "RK" },
-];
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>("welcome");
@@ -28,9 +24,57 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [contactSearch, setContactSearch] = useState("");
-  const filteredContacts = demoContacts.filter((person) =>
-    `${person.name} ${person.phone}`.toLowerCase().includes(contactSearch.trim().toLowerCase())
-  );
+  const [deviceContacts, setDeviceContacts] = useState<Contacts.Contact[]>([]);
+  const [contactsPermission, setContactsPermission] = useState<string | null>(null);
+  const [contactsLoading, setContactsLoading] = useState(false);
+  const [contactsError, setContactsError] = useState("");
+  const [contactsReloadKey, setContactsReloadKey] = useState(0);
+
+  const filteredContacts = deviceContacts.filter((person) => {
+    const phoneNumbers = (person.phoneNumbers ?? [])
+      .map((item) => item.number ?? "")
+      .join(" ");
+    return `${person.name ?? ""} ${phoneNumbers}`
+      .toLowerCase()
+      .includes(contactSearch.trim().toLowerCase());
+  });
+
+  useEffect(() => {
+    if (tab !== "Contacts") return;
+    let active = true;
+
+    const loadDeviceContacts = async () => {
+      setContactsLoading(true);
+      setContactsError("");
+      try {
+        const permission = await Contacts.requestPermissionsAsync();
+        if (!active) return;
+        setContactsPermission(permission.status);
+
+        if (!permission.granted) {
+          setDeviceContacts([]);
+          return;
+        }
+
+        const result = await Contacts.getContactsAsync({
+          fields: [Contacts.Fields.Name, Contacts.Fields.PhoneNumbers],
+          pageSize: 1000,
+        });
+        if (active) setDeviceContacts(result.data);
+      } catch (e) {
+        if (active) {
+          setContactsError(e instanceof Error ? e.message : "Contacts लोड नहीं हो पाए।");
+        }
+      } finally {
+        if (active) setContactsLoading(false);
+      }
+    };
+
+    void loadDeviceContacts();
+    return () => {
+      active = false;
+    };
+  }, [tab, contactsReloadKey]);
 
   const sendOtp = async () => {
     setError("");
@@ -99,16 +143,29 @@ export default function App() {
     }
   };
 
-  const renderContact = (person: typeof demoContacts[number]) => (
-    <View key={person.phone} style={styles.contactRow}>
-      <View style={styles.avatar}><Text style={styles.avatarText}>{person.initials}</Text></View>
-      <View style={styles.contactInfo}>
-        <Text style={styles.contactName}>{person.name}</Text>
-        <Text style={styles.muted}>{person.phone}</Text>
+  const renderContact = (person: Contacts.Contact) => {
+    const phone = (person.phoneNumbers ?? [])
+      .map((item) => item.number)
+      .filter((number): number is string => Boolean(number))
+      .join(", ") || "मोबाइल नंबर उपलब्ध नहीं";
+    const initials = (person.name ?? "?")
+      .trim()
+      .split(/\\s+/)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? "")
+      .join("");
+
+    return (
+      <View key={person.id ?? `${person.name ?? "contact"}-${phone}`} style={styles.contactRow}>
+        <View style={styles.avatar}><Text style={styles.avatarText}>{initials || "?"}</Text></View>
+        <View style={styles.contactInfo}>
+          <Text style={styles.contactName}>{person.name || "बिना नाम का Contact"}</Text>
+          <Text style={styles.muted}>{phone}</Text>
+        </View>
+        <Text style={styles.callMark}>☎</Text>
       </View>
-      <Text style={styles.callMark}>☎</Text>
-    </View>
-  );
+    );
+  };
 
   if (screen !== "app") {
     return (
@@ -216,10 +273,29 @@ export default function App() {
             autoCapitalize="none"
             style={styles.searchInput}
           />
-          <Text style={styles.muted}>अभी ये sample contacts हैं। असली phone contacts अगली development phase में जोड़े जाएँगे।</Text>
-          {filteredContacts.length > 0
-            ? filteredContacts.map(renderContact)
-            : <View style={styles.emptyCard}><Text style={styles.muted}>कोई contact नहीं मिला। दूसरा नाम या नंबर खोजें।</Text></View>}
+          {contactsLoading ? (
+            <View style={styles.emptyCard}><Text style={styles.muted}>आपके Contacts लोड हो रहे हैं…</Text></View>
+          ) : contactsError ? (
+            <View style={styles.emptyCard}>
+              <Text style={styles.muted}>{contactsError}</Text>
+              <TouchableOpacity style={styles.primaryButton} onPress={() => setContactsReloadKey((value) => value + 1)}>
+                <Text style={styles.primaryText}>दोबारा कोशिश करें</Text>
+              </TouchableOpacity>
+            </View>
+          ) : contactsPermission !== "granted" ? (
+            <View style={styles.emptyCard}>
+              <Text style={styles.muted}>VCALL को आपके फोन के Contacts पढ़ने की अनुमति चाहिए। आपके Contacts केवल इस सूची में दिखाने के लिए पढ़े जाएँगे।</Text>
+              <TouchableOpacity style={styles.primaryButton} onPress={() => setContactsReloadKey((value) => value + 1)}>
+                <Text style={styles.primaryText}>Contacts की अनुमति दें</Text>
+              </TouchableOpacity>
+            </View>
+          ) : filteredContacts.length > 0 ? (
+            filteredContacts.map(renderContact)
+          ) : (
+            <View style={styles.emptyCard}>
+              <Text style={styles.muted}>{deviceContacts.length === 0 ? "फोन में कोई Contact उपलब्ध नहीं है।" : "कोई Contact नहीं मिला। दूसरा नाम या नंबर खोजें।"}</Text>
+            </View>
+          )}
         </>}
         {tab === "Calls" && <View style={styles.emptyCard}><Text style={styles.sectionTitle}>Call history</Text><Text style={styles.muted}>Missed, received और outgoing calls यहाँ दिखेंगे। Calling service अभी जुड़नी बाकी है।</Text></View>}
         {tab === "Profile" && <View style={styles.emptyCard}><Text style={styles.sectionTitle}>Your VCALL profile</Text><Text style={styles.muted}>Verified number: {verifiedPhone}</Text><TouchableOpacity disabled={busy} style={styles.logoutButton} onPress={logout}><Text style={styles.logoutText}>{busy ? "Please wait…" : "Log out"}</Text></TouchableOpacity></View>}
