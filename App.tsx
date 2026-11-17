@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import * as Contacts from "expo-contacts";
+import * as Contacts from "expo-contacts/legacy";
 import {
   Alert, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput,
   TouchableOpacity, View,
