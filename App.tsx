@@ -150,7 +150,7 @@ export default function App() {
       .join(", ") || "मोबाइल नंबर उपलब्ध नहीं";
     const initials = (person.name ?? "?")
       .trim()
-      .split(/\\s+/)
+      .split(/\s+/)
       .slice(0, 2)
       .map((part) => part[0]?.toUpperCase() ?? "")
       .join("");
