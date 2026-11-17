@@ -14,7 +14,8 @@
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
-        "POST_NOTIFICATIONS"
+        "POST_NOTIFICATIONS",
+        "READ_CONTACTS"
       ],
       "googleServicesFile": "./google-services.json"
     },
@@ -29,10 +30,24 @@
           }
         }
       ],
-      "./plugins/withFirebaseBomOverride"
+      "./plugins/withFirebaseBomOverride",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow VCALL to access your contacts so you can find people to connect with."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "ios": {
+      "bundleIdentifier": "com.vcall.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "274235fb-4df7-4bfc-a43f-85a9e963c7df"
+      }
     }
   }
 }
